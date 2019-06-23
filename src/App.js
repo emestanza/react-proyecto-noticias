@@ -1,26 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component, Fragment} from "react";
+import Header from './components/Header';
+import ListaNoticias from './components/ListaNoticias';
+import Formulario from './components/Formulario';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import './index.css';
+//30723f89252e4f08b9bef62c8f5393a3
+class App extends Component{
+
+  state = {
+      noticias: []
+  };
+
+  componentDidMount(){
+  
+      this.consultarNoticias();
+
+  }
+
+  consultarNoticias = async(categoria='general') => {
+
+    const url = `https://newsapi.org/v2/top-headlines?country=us&category=${categoria}&apiKey=30723f89252e4f08b9bef62c8f5393a3`;
+    const respuesta = await fetch(url);
+    const noticias = await respuesta.json();
+    console.log(noticias);
+
+    this.setState({
+      noticias: noticias.articles
+    })
+
+  }
+
+
+    render(){
+        return (
+            <Fragment>
+              <Header 
+              titulo="Noticias de React"
+              />
+
+              <div className="container white contenedor-noticias">
+                  <Formulario
+                    consultarNoticias = {this.consultarNoticias}
+                  />
+
+                  <ListaNoticias 
+                    noticias={this.state.noticias}
+                  />
+              </div>
+
+            </Fragment>
+        );
+    }
 }
 
 export default App;
